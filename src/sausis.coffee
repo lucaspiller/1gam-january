@@ -7,23 +7,36 @@ $ ->
   board = $('#sausis .board')
 
   # Create the columns
-  COLUMNS = 5
-  ROWS = 5
-  COLOURS = ['red', 'blue', 'green']
+  INITIAL_COLUMNS = 5
+  columns = INITIAL_COLUMNS
 
-  for columnIndex in [0..COLUMNS - 1]
+  for columnIndex in [0..INITIAL_COLUMNS - 1]
     column = $('<div />')
     column.addClass 'column'
     column.data 'x', columnIndex
+    board.append column
 
-    # Create the rows of balls
-    for rowIndex in [0..ROWS - 1]
+  # create the rows
+  INITIAL_ROWS = 5
+  rows = 0
+  COLOURS = ['red', 'blue', 'green']
+
+  addRow = ->
+    # Create a rows of balls
+    rowIndex = rows++
+    for columnIndex in [0..columns]
+      column = $(".column[data-x='#{columnIndex}']")
       colour = COLOURS[Math.floor Math.random() * COLOURS.length]
       ball = $('<div />')
       ball.addClass 'ball'
       ball.addClass colour
       ball.data 'x', columnIndex
       ball.data 'y', rowIndex
-      column.append ball
+      column.prepend ball
 
-    board.append column
+  for rowIndex in [0..INITIAL_ROWS - 1]
+    addRow()
+
+  # create new rows
+  NEW_ROW_INTERVAL = 2500
+  setInterval addRow, NEW_ROW_INTERVAL
