@@ -18,6 +18,29 @@
   height: 50px;
   margin: 10px auto;
   border-radius: 25px;
+  -webkit-animation-name: ballAppear;
+  -webkit-animation-duration: 1s;
+}
+
+@-webkit-keyframes ballAppear {
+  // invisible
+  0% {
+    height: 0;
+    opacity: 0;
+  }
+
+  // slide other balls down creating space for this one
+  70% {
+    opacity: 0;
+    height: 50px;
+    -webkit-transform: scale(0);
+  }
+
+  // make this ball grow and fade in
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+  }
 }
 
 #sausis .board .column .ball.red {
