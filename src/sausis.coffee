@@ -18,7 +18,7 @@ initGame = ->
   alive = true
 
   # Create the columns
-  INITIAL_COLUMNS = 5
+  INITIAL_COLUMNS = 7
   columns = INITIAL_COLUMNS
   balls = []
 
@@ -31,7 +31,7 @@ initGame = ->
 
   # create the rows
   INITIAL_ROWS = 4
-  MAX_ROWS = 9
+  MAX_ROWS = 12
   rows = 0
   COLOURS = ['red', 'blue', 'green']
 
