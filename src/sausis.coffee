@@ -3,8 +3,19 @@ $ = Zepto
 
 # Create a new instance of the game and run it, using 
 $ ->
-  # Get the game board
-  board = $('#sausis .board')
+  initGame()
+
+# Setup a new game
+initGame = ->
+  # Remove old board (if any)
+  $('#sausis .board').remove()
+
+  # Create the new game board
+  board = $('<div/>')
+  board.addClass 'board'
+  $('#sausis').append board
+
+  alive = true
 
   # Create the columns
   INITIAL_COLUMNS = 5
@@ -18,12 +29,20 @@ $ ->
 
   # create the rows
   INITIAL_ROWS = 5
+  MAX_ROWS = 8
   rows = 0
   COLOURS = ['red', 'blue', 'green']
 
   addRow = ->
     # Create a rows of balls
     rowIndex = rows++
+
+    # Game over :(
+    if rowIndex == MAX_ROWS
+      alive = false
+      return
+
+    # Add a new ball to each column
     for columnIndex in [0..columns]
       column = $(".column[data-x='#{columnIndex}']")
       colour = COLOURS[Math.floor Math.random() * COLOURS.length]
@@ -34,9 +53,16 @@ $ ->
       ball.data 'y', rowIndex
       column.prepend ball
 
+  # generate initial rows
   for rowIndex in [0..INITIAL_ROWS - 1]
     addRow()
 
-  # create new rows
+  # create new rows periodically
   NEW_ROW_INTERVAL = 2500
-  setInterval addRow, NEW_ROW_INTERVAL
+  addRowOrRestartGame = ->
+    if alive
+      addRow()
+      setTimeout addRowOrRestartGame, NEW_ROW_INTERVAL
+    else
+      initGame()
+  setTimeout addRowOrRestartGame, NEW_ROW_INTERVAL
