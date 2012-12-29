@@ -20,12 +20,14 @@ initGame = ->
   # Create the columns
   INITIAL_COLUMNS = 5
   columns = INITIAL_COLUMNS
+  balls = []
 
   for columnIndex in [0..INITIAL_COLUMNS - 1]
     column = $('<div />')
     column.addClass 'column'
     column.data 'x', columnIndex
     board.append column
+    balls.push []
 
   # create the rows
   INITIAL_ROWS = 5
@@ -51,6 +53,8 @@ initGame = ->
       ball.addClass colour
       ball.data 'x', columnIndex
       ball.data 'y', rowIndex
+
+      balls[columnIndex].push ball
       column.prepend ball
 
   # generate initial rows
@@ -81,6 +85,16 @@ initGame = ->
       column.append character
   moveCharacterToColumn INITIAL_CHARACTER_COLUMN
 
+  characterBalls = []
+  pullBall = (columnIndex) ->
+    # remove the first (bottom) ball from the column
+    ball = balls[columnIndex].shift()
+    if ball
+      ball.remove()
+
+      # add to balls stored by character
+      characterBalls.push ball
+
   window.onkeyup = (e) ->
     if alive
       e = e.keyCode
@@ -91,3 +105,8 @@ initGame = ->
         when 39 # right
           if characterColumn < INITIAL_COLUMNS - 1
             moveCharacterToColumn characterColumn + 1
+        when 40 # down, pull
+          pullBall characterColumn
+        when 38 # up, push
+          # TODO
+          true
