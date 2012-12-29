@@ -43,7 +43,7 @@ initGame = ->
       return
 
     # Add a new ball to each column
-    for columnIndex in [0..columns]
+    for columnIndex in [0..columns - 1]
       column = $(".column[data-x='#{columnIndex}']")
       colour = COLOURS[Math.floor Math.random() * COLOURS.length]
       ball = $('<div />')
