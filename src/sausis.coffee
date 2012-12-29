@@ -47,7 +47,7 @@ initGame = ->
     rowIndex = rows++
 
     # Game over :(
-    if countRows() == MAX_ROWS
+    if countRows() >= MAX_ROWS
       alive = false
       return
 
@@ -69,7 +69,7 @@ initGame = ->
     addRow()
 
   # create new rows periodically
-  NEW_ROW_INTERVAL = 2500
+  NEW_ROW_INTERVAL = 5000
   addRowOrRestartGame = ->
     if alive
       addRow()
@@ -102,6 +102,23 @@ initGame = ->
       # add to balls stored by character
       characterBalls.push ball
 
+  pushBall = (columnIndex) ->
+    # don't push if we have exceeded the limit
+    if countRows() >= MAX_ROWS
+      return false
+
+    # unlike the columns this is LIFO
+    ball = characterBalls.pop()
+    if ball
+      # add the ball to the start of the column
+      balls[columnIndex].unshift ball
+      $(".column[data-x='#{columnIndex}']").append(ball)
+
+  # prevent window scrolling from arrow keys
+  window.onkeydown = (e) ->
+    if e.keyCode == 40 || e.keyCode == 38
+      false
+
   window.onkeyup = (e) ->
     if alive
       e = e.keyCode
@@ -115,5 +132,5 @@ initGame = ->
         when 40 # down, pull
           pullBall characterColumn
         when 38 # up, push
-          # TODO
-          true
+          pushBall characterColumn
+          false
