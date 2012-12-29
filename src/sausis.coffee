@@ -66,3 +66,28 @@ initGame = ->
     else
       initGame()
   setTimeout addRowOrRestartGame, NEW_ROW_INTERVAL
+
+  # generate character
+  INITIAL_CHARACTER_COLUMN = 2
+  characterColumn = null
+
+  moveCharacterToColumn = (columnIndex) ->
+    unless columnIndex == characterColumn
+      characterColumn = columnIndex
+      $(".character").remove()
+      character = $('<div/>')
+      character.addClass 'character'
+      column = $(".column[data-x='#{characterColumn}']")
+      column.append character
+  moveCharacterToColumn INITIAL_CHARACTER_COLUMN
+
+  window.onkeyup = (e) ->
+    if alive
+      e = e.keyCode
+      switch e
+        when 37 # left
+          if characterColumn > 0
+            moveCharacterToColumn characterColumn - 1
+        when 39 # right
+          if characterColumn < INITIAL_COLUMNS - 1
+            moveCharacterToColumn characterColumn + 1

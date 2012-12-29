@@ -3,6 +3,7 @@
   height: 600px;
   margin: 0 auto;
   border: 5px solid #aaa;
+  position: relative;
 }
 
 #sausis .board .column {
@@ -56,4 +57,12 @@
 #sausis .board .column .ball.green {
   background: #4de842;
   background: -webkit-radial-gradient(center, ellipse cover, #89ff53 0%,#4de842 100%);
+}
+
+#sausis .board .column .character {
+  width: 77px;
+  height: 30px;
+  background: #000;
+  position: absolute;
+  bottom: 0px;
 }
