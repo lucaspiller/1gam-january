@@ -35,12 +35,19 @@ initGame = ->
   rows = 0
   COLOURS = ['red', 'blue', 'green']
 
+  countRows = ->
+    maxBalls = 0
+    for column in balls
+      if column.length > maxBalls
+        maxBalls = column.length
+    maxBalls
+
   addRow = ->
     # Create a rows of balls
     rowIndex = rows++
 
     # Game over :(
-    if rowIndex == MAX_ROWS
+    if countRows() == MAX_ROWS
       alive = false
       return
 
