@@ -62,7 +62,7 @@ initGame = ->
       ball.data 'x', columnIndex
       ball.data 'y', rowIndex
 
-      balls[columnIndex].push ball
+      balls[columnIndex].unshift ball
       column.prepend ball
 
   # generate initial rows
@@ -95,22 +95,24 @@ initGame = ->
 
   findAndDestroyBalls = (pushedColumnIndex) ->
     columnBalls = balls[pushedColumnIndex]
+    if columnBalls.length < 3
+      return
 
     # get the colour of the last pushed ball
-    pushedColour = columnBalls[0].data 'colour'
+    pushedColour = columnBalls[columnBalls.length - 1].data 'colour'
 
     # go up the column until we find a non matching ball
-    for rowIndex in [1..columnBalls.length - 1]
+    for rowIndex in [columnBalls.length - 2..0]
       if columnBalls[rowIndex].data('colour') != pushedColour
         break
 
     # if the non matching has an index of 3 or more, we can remove balls
-    if rowIndex >= 3
-      # simple shift them off, and add the remove class
+    if (columnBalls.length - 1) - rowIndex >= 3
+      # simple pop them off, and add the remove class
       # which trigger the remove animation
-      deleteToIndex = rowIndex - 1
-      for rowIndex in [0..deleteToIndex]
-        ball = columnBalls.shift()
+      deleteToIndex = rowIndex + 1
+      for rowIndex in [columnBalls.length - 1..deleteToIndex]
+        ball = columnBalls.pop()
         ball.addClass 'remove'
 
       # then clean up afterwards
@@ -122,13 +124,14 @@ initGame = ->
   characterBalls = []
   pullBall = (columnIndex) ->
     # get the first (bottom) ball from the column
-    ball = balls[columnIndex][0]
+    columnBalls = balls[columnIndex]
+    ball = columnBalls[columnBalls.length - 1]
     if ball
       # check it's colour matches that of the last pushed ball
       lastPulledBall = characterBalls[0]
       if !lastPulledBall || lastPulledBall.data('colour') == ball.data('colour')
         # if so remove it
-        ball = balls[columnIndex].shift()
+        ball = columnBalls.pop()
         ball.removeClass 'new'
         ball.remove()
 
@@ -145,7 +148,7 @@ initGame = ->
       ball = characterBalls.pop()
 
       # add the ball to the start of the column
-      balls[columnIndex].unshift ball
+      balls[columnIndex].push ball
       $(".column[data-x='#{columnIndex}']").append(ball)
 
     findAndDestroyBalls(columnIndex)
