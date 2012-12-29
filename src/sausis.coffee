@@ -111,15 +111,46 @@ initGame = ->
       # simple pop them off, and add the remove class
       # which trigger the remove animation
       deleteToIndex = rowIndex + 1
+
+      searched = []
+      toSearch = []
+      toDelete = []
       for rowIndex in [columnBalls.length - 1..deleteToIndex]
-        ball = columnBalls.pop()
-        ball.addClass 'remove'
+        toSearch.push [pushedColumnIndex, rowIndex]
+
+      while toSearch.length > 0
+        [x, y] = toSearch.shift()
+        if tupleExists [x, y], searched
+          continue
+        searched.push [x, y]
+
+        if !balls[x] || !balls[x][y]
+          continue
+
+        if balls[x][y].data('colour') != pushedColour
+          continue
+
+        toDelete.push [x, y]
+        toSearch.push [x + 1, y]
+        toSearch.push [x - 1, y]
+        toSearch.push [x, y + 1]
+        toSearch.push [x, y - 1]
+
+      for [x, y] in toDelete
+        balls[x][y].addClass 'remove'
+        balls[x].splice y, 1
 
       # then clean up afterwards
       setTimeout ->
         $('.ball.remove').remove()
-        ball.remove()
       , 300
+
+  tupleExists = (tuple, array) ->
+    [x, y] = tuple
+    for [ax, ay], i in array
+      if ax == x && ay == y
+        return true
+    false
 
   characterBalls = []
   pullBall = (columnIndex) ->
@@ -139,19 +170,20 @@ initGame = ->
         characterBalls.push ball
 
   pushBall = (columnIndex) ->
-    # don't push if we have exceeded the limit
-    if countRows() >= MAX_ROWS
-      return false
+    if characterBalls.length > 0
+      # don't push if we have exceeded the limit
+      if countRows() >= MAX_ROWS
+        return false
 
-    while characterBalls.length > 0
-      # unlike the columns this is LIFO
-      ball = characterBalls.pop()
+      while characterBalls.length > 0
+        # unlike the columns this is LIFO
+        ball = characterBalls.pop()
 
-      # add the ball to the start of the column
-      balls[columnIndex].push ball
-      $(".column[data-x='#{columnIndex}']").append(ball)
+        # add the ball to the start of the column
+        balls[columnIndex].push ball
+        $(".column[data-x='#{columnIndex}']").append(ball)
 
-    findAndDestroyBalls(columnIndex)
+      findAndDestroyBalls(columnIndex)
 
   # prevent window scrolling from arrow keys
   window.onkeydown = (e) ->
