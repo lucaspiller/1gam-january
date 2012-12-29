@@ -26,6 +26,11 @@
   -webkit-animation-duration: 1s;
 }
 
+#sausis .board .column .ball.remove {
+  -webkit-animation-name: ballRemove;
+  -webkit-animation-duration: 300ms;
+}
+
 @-webkit-keyframes ballAppear {
   /* invisible */
   0% {
@@ -46,6 +51,21 @@
     -webkit-transform: scale(1);
   }
 }
+
+@-webkit-keyframes ballRemove {
+  /* visible */
+  0% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+  }
+
+  /* shrink and fade out */
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(0);
+  }
+}
+
 
 #sausis .board .column .ball[data-colour=red] {
   background: #ff322b;

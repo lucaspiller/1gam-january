@@ -93,6 +93,32 @@ initGame = ->
       column.append character
   moveCharacterToColumn INITIAL_CHARACTER_COLUMN
 
+  findAndDestroyBalls = (pushedColumnIndex) ->
+    columnBalls = balls[pushedColumnIndex]
+
+    # get the colour of the last pushed ball
+    pushedColour = columnBalls[0].data 'colour'
+
+    # go up the column until we find a non matching ball
+    for rowIndex in [1..columnBalls.length - 1]
+      if columnBalls[rowIndex].data('colour') != pushedColour
+        break
+
+    # if the non matching has an index of 3 or more, we can remove balls
+    if rowIndex >= 3
+      # simple shift them off, and add the remove class
+      # which trigger the remove animation
+      deleteToIndex = rowIndex - 1
+      for rowIndex in [0..deleteToIndex]
+        ball = columnBalls.shift()
+        ball.addClass 'remove'
+
+      # then clean up afterwards
+      setTimeout ->
+        $('.ball.remove').remove()
+        ball.remove()
+      , 300
+
   characterBalls = []
   pullBall = (columnIndex) ->
     # get the first (bottom) ball from the column
@@ -120,6 +146,7 @@ initGame = ->
       # add the ball to the start of the column
       balls[columnIndex].unshift ball
       $(".column[data-x='#{columnIndex}']").append(ball)
+      findAndDestroyBalls(columnIndex)
 
   # prevent window scrolling from arrow keys
   window.onkeydown = (e) ->
