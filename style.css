@@ -44,13 +44,16 @@
 }
 
 #sausis .board .column .ball.red {
+  background: #ff322b;
   background: -webkit-radial-gradient(center, ellipse cover, #ff5378 0%,#ff322b 100%);
 }
 
 #sausis .board .column .ball.blue {
+  background: #4292e8;
   background: -webkit-radial-gradient(center, ellipse cover, #53d1ff 0%,#4292e8 100%);
 }
 
 #sausis .board .column .ball.green {
+  background: #4de842;
   background: -webkit-radial-gradient(center, ellipse cover, #89ff53 0%,#4de842 100%);
 }
