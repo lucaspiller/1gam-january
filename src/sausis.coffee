@@ -140,13 +140,15 @@ initGame = ->
     if countRows() >= MAX_ROWS
       return false
 
-    # unlike the columns this is LIFO
-    ball = characterBalls.pop()
-    if ball
+    while characterBalls.length > 0
+      # unlike the columns this is LIFO
+      ball = characterBalls.pop()
+
       # add the ball to the start of the column
       balls[columnIndex].unshift ball
       $(".column[data-x='#{columnIndex}']").append(ball)
-      findAndDestroyBalls(columnIndex)
+
+    findAndDestroyBalls(columnIndex)
 
   # prevent window scrolling from arrow keys
   window.onkeydown = (e) ->
