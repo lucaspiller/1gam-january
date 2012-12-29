@@ -57,7 +57,7 @@ initGame = ->
       colour = COLOURS[Math.floor Math.random() * COLOURS.length]
       ball = $('<div />')
       ball.addClass 'ball'
-      ball.addClass colour
+      ball.data 'colour', colour
       ball.addClass 'new'
       ball.data 'x', columnIndex
       ball.data 'y', rowIndex
@@ -95,14 +95,19 @@ initGame = ->
 
   characterBalls = []
   pullBall = (columnIndex) ->
-    # remove the first (bottom) ball from the column
-    ball = balls[columnIndex].shift()
+    # get the first (bottom) ball from the column
+    ball = balls[columnIndex][0]
     if ball
-      ball.removeClass 'new'
-      ball.remove()
+      # check it's colour matches that of the last pushed ball
+      lastPulledBall = characterBalls[0]
+      if !lastPulledBall || lastPulledBall.data('colour') == ball.data('colour')
+        # if so remove it
+        ball = balls[columnIndex].shift()
+        ball.removeClass 'new'
+        ball.remove()
 
-      # add to balls stored by character
-      characterBalls.push ball
+        # add to balls stored by character
+        characterBalls.push ball
 
   pushBall = (columnIndex) ->
     # don't push if we have exceeded the limit
