@@ -19,6 +19,9 @@
   height: 50px;
   margin: 10px auto;
   border-radius: 25px;
+}
+
+#sausis .board .column .ball.new {
   -webkit-animation-name: ballAppear;
   -webkit-animation-duration: 1s;
 }

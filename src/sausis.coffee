@@ -30,8 +30,8 @@ initGame = ->
     balls.push []
 
   # create the rows
-  INITIAL_ROWS = 5
-  MAX_ROWS = 8
+  INITIAL_ROWS = 4
+  MAX_ROWS = 9
   rows = 0
   COLOURS = ['red', 'blue', 'green']
 
@@ -58,6 +58,7 @@ initGame = ->
       ball = $('<div />')
       ball.addClass 'ball'
       ball.addClass colour
+      ball.addClass 'new'
       ball.data 'x', columnIndex
       ball.data 'y', rowIndex
 
@@ -97,6 +98,7 @@ initGame = ->
     # remove the first (bottom) ball from the column
     ball = balls[columnIndex].shift()
     if ball
+      ball.removeClass 'new'
       ball.remove()
 
       # add to balls stored by character
