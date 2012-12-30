@@ -1,4 +1,13 @@
+@font-face {
+  font-family: 'Changa One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Changa One'), local('ChangaOne'), url(/media/changa-one.woff) format('woff');
+}
+
 #sausis {
+  font: 2em 'Changa One', serif;
+  color: #333;
   width: 400px;
   height: 600px;
   margin: 0 auto;
