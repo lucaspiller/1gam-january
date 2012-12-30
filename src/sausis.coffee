@@ -9,6 +9,9 @@ $ ->
   }
   game.start()
 
+  $('#sausis button.play-again').click ->
+    game.start()
+
 window.requestAnimationFrame = (() ->
   return window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
@@ -67,6 +70,7 @@ class NullRenderComponent
   pushBallToColumn: (ballObject, columnIndex) -> true
   destroyBallFromColumn: (ballObject, columnIndex) -> true
   buildCharacterOnColumn: (columnIndex) -> true
+  showGameOverScreen: (finalScore) -> true
 
   startGameLoop: (callback) ->
     @gameLoopTimer = setInterval =>
@@ -92,10 +96,12 @@ class DomRenderComponent extends NullRenderComponent
       @removeBall ball.id
 
   updateScore: (score) ->
-    delimeteredScore = "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
-    @board.find('.score').html delimeteredScore
+    @board.find('.score').text formatScore score
 
   buildGameBoard: ->
+    # Hide gameover screen (if any)
+    @parent.find('.game-over').hide()
+
     # Remove old board (if any)
     @parent.find('.board').remove()
 
@@ -153,6 +159,11 @@ class DomRenderComponent extends NullRenderComponent
   stopGameLoop: ->
     @running = false
 
+  showGameOverScreen: (finalScore) ->
+    gameover = @parent.find('.game-over')
+    gameover.find('.score').text formatScore finalScore
+    @parent.find('.game-over').show()
+
   # private
 
   removeBall: (ballId) ->
@@ -178,6 +189,9 @@ class DomRenderComponent extends NullRenderComponent
 
   getTimestamp = ->
     new Date().getTime()
+
+  formatScore = (score) ->
+    "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 
 class Ball
   colours = ['red', 'blue', 'green']
@@ -430,7 +444,7 @@ class Game
   triggerGameOver: ->
     @running = false
     @options.renderComponent.stopGameLoop()
-    # TODO autorestart
+    @options.renderComponent.showGameOverScreen @score
 
   getTimestamp = ->
     new Date().getTime()

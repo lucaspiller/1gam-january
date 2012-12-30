@@ -105,3 +105,35 @@
   top: -5px;
   right: 5px;
 }
+
+#sausis .game-over {
+  position: absolute;
+  width: 300px;
+  height: 170px;
+  top: 150px;
+  left: 50px;
+  border: 5px solid #ccc;
+  background: #fff;
+  text-align: center;
+}
+
+#sausis .game-over p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#sausis .game-over button {
+	background-color: #ededed;
+	background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+	border-radius: 6px;
+	border: 1px solid #dcdcdc;
+	color: #555;
+    font: 0.9em 'Changa One', serif;
+	padding: 6px 24px;
+}
+
+#sausis .game-over button:hover {
+	background-color:#dfdfdf;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+    cursor: pointer;
+}
