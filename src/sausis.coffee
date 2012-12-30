@@ -59,6 +59,7 @@ class KeyboardInputComponent extends NullInputComponent
 class NullRenderComponent
   start: -> true
   update: -> true
+  updateScore: (score) -> true
   buildGameBoard: -> true
   buildColumn: (columnIndex) -> true
   addNewBallToColumn: (ballObject, columnIndex) -> true
@@ -90,6 +91,10 @@ class DomRenderComponent extends NullRenderComponent
       ball = @ballsToRemove.shift()
       @removeBall ball.id
 
+  updateScore: (score) ->
+    delimeteredScore = "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+    @board.find('.score').html delimeteredScore
+
   buildGameBoard: ->
     # Remove old board (if any)
     @parent.find('.board').remove()
@@ -97,6 +102,12 @@ class DomRenderComponent extends NullRenderComponent
     # Create the new game board
     @board = $('<div/>')
     @board.addClass 'board'
+
+    # Score indicator
+    score = $('<div/>')
+    score.addClass 'score'
+    @board.append score
+
     @parent.append @board
 
   buildColumn: (columnIndex) ->
@@ -204,6 +215,7 @@ class Character
 
 class Game
   running: false
+  score: 0
 
   defaults:
     columns: 7
@@ -211,7 +223,7 @@ class Game
     inputComponent: new NullInputComponent
     renderComponent: new NullRenderComponent
     newRowInterval: 5000
-    maxRows: 12
+    maxRows: 11
 
   constructor: (@options = {}) ->
     _.defaults @options, @defaults
@@ -227,6 +239,7 @@ class Game
     @options.inputComponent.update()
     @handleInput()
     @handleTimers()
+    @options.renderComponent.updateScore @score
     @options.renderComponent.update()
 
   # private
@@ -390,10 +403,14 @@ class Game
         toSearch.push [x, y - 1]
 
       # remove the balls we found
+      scoreForMove = 0
       for [x, y] in toDelete
         ball = @balls[x][y]
+        scoreForMove += 10
         @balls[x].splice y, 1
         @options.renderComponent.destroyBallFromColumn ball, x + 1
+
+      @score += scoreForMove
 
   handleTimers: ->
     timestamp = getTimestamp()

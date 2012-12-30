@@ -6,18 +6,23 @@
 }
 
 #sausis {
-  font: 2em 'Changa One', serif;
+  font: 1.5em 'Changa One', serif;
   color: #333;
   width: 400px;
   height: 600px;
   margin: 0 auto;
-  border: 5px solid #aaa;
+  border: 5px solid #ccc;
   position: relative;
+}
+
+#sausis .board {
+  background: #ccc;
+  padding-top: 20px;
 }
 
 #sausis .board .column {
   width: 54px;
-  height: 600px;
+  height: 580px;
   border-right: 3px solid #fff;
   background: #eee;
   float: left;
@@ -93,4 +98,10 @@
   background: #000;
   position: absolute;
   bottom: 0px;
+}
+
+#sausis .board .score {
+  position: absolute;
+  top: -5px;
+  right: 5px;
 }
