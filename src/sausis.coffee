@@ -293,20 +293,30 @@ class Game
   pullBall: (x) ->
     columnBalls = @balls[x - 1]
 
-    # get the last ball
-    ball = columnBalls[columnBalls.length - 1]
+    # get the colour of the last ball in the column
+    pulledColour = columnBalls[columnBalls.length - 1].colour
 
-    if ball
+    # go up the column until we find a non matching ball (we skip
+    # the first ball as that as what we are comparing against)
+    for rowIndex in [columnBalls.length - 1..0]
+      # get the ball
+      ball = columnBalls[rowIndex]
+
+      # check it's colour matches that of the last bull in column
+      unless ball.colour == pulledColour
+        return
+
       # check it's colour matches that of the last pushed ball
       lastPulledBall = @characterBalls[0]
+      unless !lastPulledBall || lastPulledBall.colour == ball.colour
+        return
 
-      if !lastPulledBall || lastPulledBall.colour == ball.colour
-        # if so remove it
-        ball = columnBalls.pop()
-        @options.renderComponent.popBallFromColumn ball, x
+      # if so remove it
+      ball = columnBalls.pop()
+      @options.renderComponent.popBallFromColumn ball, x
 
-        # add to balls stored by character
-        @characterBalls.push ball
+      # add to balls stored by character
+      @characterBalls.push ball
 
   pushBall: (x) ->
     columnBalls = @balls[x - 1]
