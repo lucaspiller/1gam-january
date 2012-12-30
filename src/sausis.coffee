@@ -52,6 +52,11 @@ initGame = ->
         maxBalls = column.length
     maxBalls
 
+  # create new rows periodically
+  # (timer is handled in game loop)
+  NEW_ROW_INTERVAL = 5000
+  nextRowAt = 0
+
   addRow = ->
     # Create a rows of balls
     rowIndex = rows++
@@ -75,19 +80,11 @@ initGame = ->
       balls[columnIndex].unshift ball
       column.prepend ball
 
+    nextRowAt = new Date().getTime() + NEW_ROW_INTERVAL
+
   # generate initial rows
   for rowIndex in [0..INITIAL_ROWS - 1]
     addRow()
-
-  # create new rows periodically
-  NEW_ROW_INTERVAL = 5000
-  addRowOrRestartGame = ->
-    if alive
-      addRow()
-      setTimeout addRowOrRestartGame, NEW_ROW_INTERVAL
-    else
-      initGame()
-  setTimeout addRowOrRestartGame, NEW_ROW_INTERVAL
 
   # generate character
   INITIAL_CHARACTER_COLUMN = 2
@@ -221,10 +218,17 @@ initGame = ->
 
     keys = []
 
-  gameLoop = ->
-    return unless alive
-    requestAnimationFrame gameLoop
+  handleTimers = ->
+    now = new Date().getTime()
+    if now > nextRowAt
+      addRow()
 
+  gameLoop = ->
+    unless alive
+      return initGame()
+
+    requestAnimationFrame gameLoop
     handleKeyboardInput()
+    handleTimers()
 
   requestAnimationFrame gameLoop
