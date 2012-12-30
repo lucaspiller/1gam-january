@@ -216,6 +216,7 @@ class Character
 class Game
   running: false
   score: 0
+  rowsGenerated: 0
 
   defaults:
     columns: 7
@@ -281,6 +282,7 @@ class Game
       # render
       @options.renderComponent.addNewBallToColumn ball, x
 
+    @rowsGenerated++
     @buildNextRowAt = getTimestamp() + @options.newRowInterval
 
   buildCharacter: ->
@@ -403,10 +405,9 @@ class Game
         toSearch.push [x, y - 1]
 
       # remove the balls we found
-      scoreForMove = 0
+      scoreForMove = Math.floor(@rowsGenerated * (toDelete.length / 3)) * 10
       for [x, y] in toDelete
         ball = @balls[x][y]
-        scoreForMove += 10
         @balls[x].splice y, 1
         @options.renderComponent.destroyBallFromColumn ball, x + 1
 
