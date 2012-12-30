@@ -195,15 +195,18 @@ initGame = ->
 
       findAndDestroyBalls(columnIndex)
 
-  # prevent window scrolling from arrow keys
+  keys = []
   window.onkeydown = (e) ->
+    keys.push e.keyCode
+
+    # prevent window scrolling from arrow keys
     if e.keyCode == 40 || e.keyCode == 38
       false
 
-  window.onkeyup = (e) ->
-    if alive
-      e = e.keyCode
-      switch e
+  handleKeyboardInput = ->
+    while keys.length > 0
+      key = keys.shift()
+      switch key
         when 37 # left
           if characterColumn > 0
             moveCharacterToColumn characterColumn - 1
@@ -216,8 +219,12 @@ initGame = ->
           pushBall characterColumn
           false
 
+    keys = []
+
   gameLoop = ->
     return unless alive
     requestAnimationFrame gameLoop
+
+    handleKeyboardInput()
 
   requestAnimationFrame gameLoop
