@@ -208,7 +208,7 @@ class Ball
 
 class Character
   constructor: (@options) ->
-    @column = Math.floor @options.columns / 2
+    @column = Math.ceil @options.columns / 2
     true
 
   start: ->
