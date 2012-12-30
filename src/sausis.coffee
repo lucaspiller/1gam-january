@@ -1,9 +1,19 @@
 # [Zepto.js](http://zeptojs.com/) is used for DOM manipulation.
 $ = Zepto
 
-# Create a new instance of the game and run it, using 
+# Create a new instance of the game and run it
 $ ->
   initGame()
+
+window.requestAnimationFrame = (() ->
+  return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    (f) ->
+      window.setTimeout(f,1e3/60)
+)()
 
 # Setup a new game
 initGame = ->
@@ -205,3 +215,9 @@ initGame = ->
         when 38 # up, push
           pushBall characterColumn
           false
+
+  gameLoop = ->
+    return unless alive
+    requestAnimationFrame gameLoop
+
+  requestAnimationFrame gameLoop
