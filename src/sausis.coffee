@@ -65,6 +65,7 @@ class NullRenderComponent
   updateScore: (score) -> true
   buildGameBoard: -> true
   buildColumn: (columnIndex) -> true
+  addRow: -> true
   addNewBallToColumn: (ballObject, columnIndex) -> true
   popBallFromColumn: (ballObject, columnIndex) -> true
   pushBallToColumn: (ballObject, columnIndex) -> true
@@ -95,10 +96,16 @@ class DomRenderComponent extends NullRenderComponent
       ball = @ballsToRemove.shift()
       @removeBall ball.id
 
+    @offset += @speed
+    @board.css 'top', @offset
+    @columns.css 'top', @columnsOffset
+
   updateScore: (score) ->
     @board.find('.score').text formatScore score
 
-  buildGameBoard: ->
+  # TODO we should pass in the expected scroll amount to the update
+  # function rather than using the speed here
+  buildGameBoard: (@length, @speed = 50 / 300) ->
     # Hide gameover screen (if any)
     @parent.find('.game-over').hide()
 
@@ -109,18 +116,30 @@ class DomRenderComponent extends NullRenderComponent
     @board = $('<div/>')
     @board.addClass 'board'
 
+    @height = lengthToPx(@length) + window.innerHeight
+    @board.css 'height', @height
+
+    @offset = -lengthToPx @length
+    @board.css 'top', @offset
+
+    @columns = $('<div/>')
+    @columns.addClass 'columns'
+    @columnsOffset = lengthToPx(@length) + 250
+    @columns.css 'top', @columnsOffset
+    @board.append @columns
+
+    @parent.append @board
+
     # Score indicator
     score = $('<div/>')
     score.addClass 'score'
-    @board.append score
-
-    @parent.append @board
+    @parent.append score
 
   buildColumn: (columnIndex) ->
     column = $('<div />')
     column.addClass 'column'
     column.data 'x', columnIndex
-    @board.append column
+    @columns.append column
 
   addNewBallToColumn: (ballObject, columnIndex) ->
     ball = createElementForBall ballObject
@@ -128,6 +147,9 @@ class DomRenderComponent extends NullRenderComponent
 
     column = @board.find(".column[data-x='#{columnIndex}']")
     column.prepend ball
+
+  addRow: ->
+    @columnsOffset -= 50
 
   pushBallToColumn: (ballObject, columnIndex) ->
     ball = createElementForBall ballObject
@@ -144,12 +166,11 @@ class DomRenderComponent extends NullRenderComponent
     @removeBallInMs ballObject.id, 300
 
   buildCharacterOnColumn: (columnIndex) ->
-    @board.find(".character").remove()
+    @parent.find(".character").remove()
     character = $('<div/>')
     character.addClass 'character'
-
-    column = @board.find(".column[data-x='#{columnIndex}']")
-    column.append character
+    character.css 'left', (columnIndex * 50) - 3
+    @parent.append character
 
   startGameLoop: (callback) ->
     @gameLoopCallback = callback
@@ -193,6 +214,9 @@ class DomRenderComponent extends NullRenderComponent
   formatScore = (score) ->
     "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 
+  lengthToPx = (length) ->
+    length * 50
+
 class Ball
   colours = ['red', 'blue', 'green']
   lastBallId = 0
@@ -235,10 +259,11 @@ class Game
   defaults:
     columns: 7
     initialRows: 4
+    length: 200
     inputComponent: new NullInputComponent
     renderComponent: new NullRenderComponent
     newRowInterval: 5000
-    maxRows: 11
+    maxRows: 9
 
   constructor: (@options = {}) ->
     _.defaults @options, @defaults
@@ -260,7 +285,7 @@ class Game
   # private
 
   buildGameBoard: ->
-    @options.renderComponent.buildGameBoard()
+    @options.renderComponent.buildGameBoard(@options.length)
 
     # initialise 2D array of balls
     @balls = []
@@ -271,8 +296,8 @@ class Game
     # build columns
     @buildColumn(x) for x in [1..@options.columns]
 
-    # build initial rows
-    @buildRow() for y in [1..@options.initialRows]
+    # build rows
+    @buildRow()# for y in [1..rowsForLength @options.length]
 
     @buildCharacter()
 
@@ -286,6 +311,8 @@ class Game
     if @countRows() >= @options.maxRows
       return @triggerGameOver()
 
+    @options.renderComponent.addRow()
+
     for x in [1..@options.columns]
       # initialize ball
       ball = new Ball()
@@ -297,7 +324,11 @@ class Game
       @options.renderComponent.addNewBallToColumn ball, x
 
     @rowsGenerated++
-    @buildNextRowAt = getTimestamp() + @options.newRowInterval
+
+    if @rowsGenerated >= @options.initialRows
+      @buildNextRowAt = getTimestamp() + @options.newRowInterval
+    else
+      @buildNextRowAt = getTimestamp() + 200
 
   buildCharacter: ->
     @character = new Character {
@@ -448,3 +479,6 @@ class Game
 
   getTimestamp = ->
     new Date().getTime()
+
+  rowsForLength = (length) ->
+    length

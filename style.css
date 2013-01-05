@@ -2,29 +2,32 @@
   font-family: 'Changa One';
   font-style: normal;
   font-weight: 400;
-  src: local('Changa One'), local('ChangaOne'), url(/media/changa-one.woff) format('woff');
+  src: local('Changa One'), local('ChangaOne'), url(media/changa-one.woff) format('woff');
 }
 
 #sausis {
   font: 1.5em 'Changa One', serif;
   color: #333;
-  width: 400px;
+  width: 800px;
   height: 600px;
   margin: 0 auto;
-  border: 5px solid #ccc;
   position: relative;
+  overflow: hidden;
 }
 
 #sausis .board {
-  background: #ccc;
-  padding-top: 20px;
+  background: url(media/river1.png);
+  position: relative;
+}
+
+#sausis .board .columns {
+  position: relative;
+  left: 35px;
 }
 
 #sausis .board .column {
   width: 54px;
   height: 580px;
-  border-right: 3px solid #fff;
-  background: #eee;
   float: left;
 }
 
@@ -46,20 +49,13 @@
 }
 
 @-webkit-keyframes ballAppear {
-  /* invisible */
   0% {
-    height: 0;
-    width: 0;
-    opacity: 0;
+    -webkit-transform:translate(0px, -200px);
   }
 
-  /* make this ball grow and fade in */
   100% {
-    height: 40px
-    width: 40px;
-    opacity: 1;
+    -webkit-transform:translate(0px, 0px);
   }
-
 }
 
 @-webkit-keyframes ballRemove {
@@ -92,15 +88,15 @@
   background: -webkit-radial-gradient(center, ellipse cover, #89ff53 0%,#4de842 100%);
 }
 
-#sausis .board .column .character {
+#sausis .character {
+  position: absolute;
   width: 54px;
   height: 30px;
   background: #000;
-  position: absolute;
-  bottom: 0px;
+  bottom: 30px;
 }
 
-#sausis .board .score {
+#sausis .score {
   position: absolute;
   top: -5px;
   right: 5px;
