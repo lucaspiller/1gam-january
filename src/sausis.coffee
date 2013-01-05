@@ -303,7 +303,7 @@ class Game
     @buildColumn(x) for x in [1..@options.columns]
 
     # build rows
-    @buildRow()# for y in [1..rowsForLength @options.length]
+    @buildRow() for y in [1..@options.initialRows]
 
     @buildCharacter()
 
@@ -330,11 +330,7 @@ class Game
       @options.renderComponent.addNewBallToColumn ball, x
 
     @rowsGenerated++
-
-    if @rowsGenerated >= @options.initialRows
-      @buildNextRowAt = getTimestamp() + @options.newRowInterval
-    else
-      @buildNextRowAt = getTimestamp() + 200
+    @buildNextRowAt = getTimestamp() + @options.newRowInterval
 
   buildCharacter: ->
     @character = new Character {
