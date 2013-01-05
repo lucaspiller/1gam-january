@@ -90,13 +90,13 @@ class DomRenderComponent extends NullRenderComponent
   start: ->
     @ballsToRemove = []
 
-  update: ->
+  update: (deltaLength) ->
     timestamp = getTimestamp()
     while @ballsToRemove.length > 0 && timestamp > @ballsToRemove[0].timestamp
       ball = @ballsToRemove.shift()
       @removeBall ball.id
 
-    @offset += @speed
+    @offset += lengthToPx deltaLength
     @board.css 'top', @offset
     @columns.css 'top', @columnsOffset
 
@@ -105,7 +105,7 @@ class DomRenderComponent extends NullRenderComponent
 
   # TODO we should pass in the expected scroll amount to the update
   # function rather than using the speed here
-  buildGameBoard: (@length, @speed = 50 / 300) ->
+  buildGameBoard: (@length) ->
     # Hide gameover screen (if any)
     @parent.find('.game-over').hide()
 
@@ -272,6 +272,7 @@ class Game
     @options.inputComponent.start()
     @options.renderComponent.start()
     @buildGameBoard()
+    @lastRenderMs = getTimestamp()
     @options.renderComponent.startGameLoop(@gameLoop)
     @running = true
 
@@ -280,7 +281,12 @@ class Game
     @handleInput()
     @handleTimers()
     @options.renderComponent.updateScore @score
-    @options.renderComponent.update()
+
+    deltaMs = getTimestamp() - @lastRenderMs
+    deltaLength = deltaMs * (1 / @options.newRowInterval)
+    @options.renderComponent.update deltaLength
+
+    @lastRenderMs = getTimestamp()
 
   # private
 
