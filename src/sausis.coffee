@@ -104,7 +104,7 @@ class DomRenderComponent extends NullRenderComponent
     @columns.css 'top', @columnsOffset
 
   updateScore: (score) ->
-    @board.find('.score').text formatScore score
+    @parent.find('.game-score').text formatScore score
 
   # TODO we should pass in the expected scroll amount to the update
   # function rather than using the speed here
@@ -136,7 +136,7 @@ class DomRenderComponent extends NullRenderComponent
 
     # Score indicator
     score = $('<div/>')
-    score.addClass 'score'
+    score.addClass 'game-score'
     @parent.append score
 
   buildColumn: (columnIndex) ->
@@ -263,7 +263,7 @@ class Game
 
   defaults:
     columns: 7
-    initialRows: 4
+    initialRows: 6
     length: 200
     inputComponent: new NullInputComponent
     renderComponent: new NullRenderComponent

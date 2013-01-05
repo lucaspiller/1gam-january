@@ -96,10 +96,10 @@
   bottom: 30px;
 }
 
-#sausis .score {
+#sausis .game-score {
   position: absolute;
-  top: -5px;
-  right: 5px;
+  top: 5px;
+  right: 10px;
 }
 
 #sausis .game-over {
@@ -111,6 +111,7 @@
   border: 5px solid #ccc;
   background: #fff;
   text-align: center;
+  z-index: 999;
 }
 
 #sausis .game-over p {
