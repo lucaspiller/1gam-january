@@ -96,7 +96,10 @@ class DomRenderComponent extends NullRenderComponent
       ball = @ballsToRemove.shift()
       @removeBall ball.id
 
-    @offset += lengthToPx deltaLength
+    if -@expectedOffset > @offset
+      @offset += lengthToPx deltaLength * 4
+    else
+      @offset += lengthToPx deltaLength
     @board.css 'top', @offset
     @columns.css 'top', @columnsOffset
 
@@ -117,6 +120,7 @@ class DomRenderComponent extends NullRenderComponent
     @board.addClass 'board'
 
     @height = lengthToPx(@length) + window.innerHeight
+    @expectedOffset = lengthToPx(@length) + 200
     @board.css 'height', @height
 
     @offset = -lengthToPx @length
@@ -150,6 +154,7 @@ class DomRenderComponent extends NullRenderComponent
 
   addRow: ->
     @columnsOffset -= 50
+    @expectedOffset -= 50
 
   pushBallToColumn: (ballObject, columnIndex) ->
     ball = createElementForBall ballObject
@@ -282,6 +287,9 @@ class Game
     @handleTimers()
     @options.renderComponent.updateScore @score
 
+    if @countRows() < @options.initialRows
+      @buildRow()
+
     deltaMs = getTimestamp() - @lastRenderMs
     deltaLength = deltaMs * (1 / @options.newRowInterval)
     @options.renderComponent.update deltaLength
@@ -301,9 +309,6 @@ class Game
 
     # build columns
     @buildColumn(x) for x in [1..@options.columns]
-
-    # build rows
-    @buildRow() for y in [1..@options.initialRows]
 
     @buildCharacter()
 
