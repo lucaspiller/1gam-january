@@ -137,7 +137,7 @@ class DomRenderComponent extends NullRenderComponent
 
     @columns = $('<div/>')
     @columns.addClass 'columns'
-    @columnsOffset = lengthToPx(@length) + 250
+    @columnsOffset = lengthToPx(@length) + 270
     @columns.css 'top', @columnsOffset
     @board.append @columns
 
