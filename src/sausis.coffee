@@ -63,6 +63,7 @@ class NullRenderComponent
   start: -> true
   update: -> true
   updateScore: (score) -> true
+  updateTimer: (time, totalTime) -> true
   buildGameBoard: -> true
   buildColumn: (columnIndex) -> true
   addRow: -> true
@@ -83,6 +84,7 @@ class NullRenderComponent
 
 class DomRenderComponent extends NullRenderComponent
   running: false
+  progressWidth: 328
 
   constructor: (@parent = $('body')) ->
     true
@@ -106,8 +108,11 @@ class DomRenderComponent extends NullRenderComponent
   updateScore: (score) ->
     @parent.find('.game-score').text formatScore score
 
-  # TODO we should pass in the expected scroll amount to the update
-  # function rather than using the speed here
+  updateTimer: (time, totalTime) ->
+    remainingTime = totalTime - time
+    @parent.find('.timer .text').text formatTime Math.floor(remainingTime)
+    @parent.find('.timer .progress').css 'width', (remainingTime / totalTime) * @progressWidth
+
   buildGameBoard: (@length) ->
     # Hide gameover screen (if any)
     @parent.find('.game-over').hide()
@@ -138,6 +143,25 @@ class DomRenderComponent extends NullRenderComponent
     score = $('<div/>')
     score.addClass 'game-score'
     @parent.append score
+
+    # Timer
+    timer = $('<div/>')
+    timer.addClass 'timer'
+
+    progress = $('<div/>')
+    progress.addClass 'progress'
+    timer.append progress
+
+    frame = $('<div/>')
+    frame.addClass 'frame'
+    timer.append frame
+
+    time = $('<div/>')
+    time.addClass 'text'
+    time.text '0:00'
+    timer.append time
+
+    @parent.append timer
 
   buildColumn: (columnIndex) ->
     column = $('<div />')
@@ -219,6 +243,12 @@ class DomRenderComponent extends NullRenderComponent
   formatScore = (score) ->
     "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 
+  formatTime = (time) ->
+    minutes = Math.floor time / 60
+    seconds = time % 60
+    seconds = "0#{seconds}" if seconds < 10
+    "#{minutes}:#{seconds}"
+
   lengthToPx = (length) ->
     length * 50
 
@@ -269,6 +299,7 @@ class Game
     renderComponent: new NullRenderComponent
     newRowInterval: 5000
     maxRows: 9
+    totalTime: 120 # two minutes
 
   constructor: (@options = {}) ->
     _.defaults @options, @defaults
@@ -278,18 +309,23 @@ class Game
     @options.renderComponent.start()
     @buildGameBoard()
     @lastRenderMs = getTimestamp()
+    @startTime = getTimestamp()
     @options.renderComponent.startGameLoop(@gameLoop)
     @running = true
 
   gameLoop: =>
+    @options.renderComponent.updateTimer (getTimestamp() - @startTime) / 1000, @options.totalTime
+
     @options.inputComponent.update()
     @handleInput()
     @handleTimers()
     @options.renderComponent.updateScore @score
 
+    # build a new row if there aren't enough
     if @countRows() < @options.initialRows
       @buildRow()
 
+    # pass the elapsed time to the renderer to tell it how far to scroll
     deltaMs = getTimestamp() - @lastRenderMs
     deltaLength = deltaMs * (1 / @options.newRowInterval)
     @options.renderComponent.update deltaLength
