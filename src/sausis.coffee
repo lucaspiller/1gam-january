@@ -296,8 +296,6 @@ class Character
 
 class Game
   running: false
-  score: 0
-  rowsGenerated: 0
 
   defaults:
     columns: 7
@@ -321,6 +319,8 @@ class Game
     @options.renderComponent.startGameLoop(@gameLoop)
     @running = true
     @distance = 0
+    @score = 0
+    @rowsGenerated = 0
 
   gameLoop: =>
     @distance = @rowsGenerated - @countRows()
