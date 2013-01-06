@@ -72,7 +72,7 @@ class NullRenderComponent
   pushBallToColumn: (ballObject, columnIndex) -> true
   destroyBallFromColumn: (ballObject, columnIndex) -> true
   buildCharacterOnColumn: (columnIndex) -> true
-  showGameOverScreen: (finalScore) -> true
+  showGameOverScreen: (finalScore, finalDistance) -> true
 
   startGameLoop: (callback) ->
     @gameLoopTimer = setInterval =>
@@ -213,9 +213,10 @@ class DomRenderComponent extends NullRenderComponent
   stopGameLoop: ->
     @running = false
 
-  showGameOverScreen: (finalScore) ->
+  showGameOverScreen: (finalScore, finalDistance) ->
     gameover = @parent.find('.game-over')
     gameover.find('.score').text formatScore finalScore
+    gameover.find('.distance').text formatDistance finalDistance
     @parent.find('.game-over').show()
 
   # private
@@ -246,6 +247,9 @@ class DomRenderComponent extends NullRenderComponent
 
   formatScore = (score) ->
     "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+
+  formatDistance = (distance) ->
+    "#{distance * 10}m"
 
   formatTime = (time) ->
     minutes = Math.floor time / 60
@@ -316,8 +320,11 @@ class Game
     @startTime = getTimestamp()
     @options.renderComponent.startGameLoop(@gameLoop)
     @running = true
+    @distance = 0
 
   gameLoop: =>
+    @distance = @rowsGenerated - @countRows()
+    @distance = 0 if @distance < 0
     timeElapsed = (getTimestamp() - @startTime) / 1000
     if timeElapsed > @options.totalTime
       timeElapsed = @options.totalTime
@@ -526,7 +533,7 @@ class Game
   triggerGameOver: ->
     @running = false
     @options.renderComponent.stopGameLoop()
-    @options.renderComponent.showGameOverScreen @score
+    @options.renderComponent.showGameOverScreen @score, @distance
 
   getTimestamp = ->
     new Date().getTime()
