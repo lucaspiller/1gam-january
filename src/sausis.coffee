@@ -111,7 +111,11 @@ class DomRenderComponent extends NullRenderComponent
   updateTimer: (time, totalTime) ->
     remainingTime = totalTime - time
     @parent.find('.timer .text').text formatTime Math.floor(remainingTime)
-    @parent.find('.timer .progress').css 'width', (remainingTime / totalTime) * @progressWidth
+
+    if time == totalTime
+      @parent.find('.timer .progress').remove()
+    else
+      @parent.find('.timer .progress').css 'width', (remainingTime / totalTime) * @progressWidth
 
   buildGameBoard: (@length) ->
     # Hide gameover screen (if any)
@@ -314,7 +318,11 @@ class Game
     @running = true
 
   gameLoop: =>
-    @options.renderComponent.updateTimer (getTimestamp() - @startTime) / 1000, @options.totalTime
+    timeElapsed = (getTimestamp() - @startTime) / 1000
+    if timeElapsed > @options.totalTime
+      timeElapsed = @options.totalTime
+      @triggerGameOver()
+    @options.renderComponent.updateTimer timeElapsed, @options.totalTime
 
     @options.inputComponent.update()
     @handleInput()
