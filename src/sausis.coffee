@@ -4,7 +4,7 @@ $ = Zepto
 # Create a new instance of the game and run it
 $ ->
   game = new Game {
-    renderComponent: new DomRenderComponent $('#sausis')
+    renderComponent: new DomRenderComponent $('#sausis .game')
     inputComponent: new KeyboardInputComponent
   }
   game.start()
@@ -12,6 +12,8 @@ $ ->
   $('#sausis button.play-again').click ->
     game.start()
 
+# Helper for raf so we can avoid all the browser
+# inconsistencies later on
 window.requestAnimationFrame = (() ->
   return window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||

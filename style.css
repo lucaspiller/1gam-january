@@ -15,35 +15,35 @@
   overflow: hidden;
 }
 
-#sausis .board {
+#sausis .game .board {
   background: url(media/river1.png);
   position: relative;
 }
 
-#sausis .board .columns {
+#sausis .game .board .columns {
   position: relative;
   left: 35px;
 }
 
-#sausis .board .column {
+#sausis .game .board .column {
   width: 54px;
   height: 580px;
   float: left;
 }
 
-#sausis .board .column .ball {
+#sausis .game .board .column .ball {
   width: 40px;
   height: 40px;
   margin: 8px auto;
   border-radius: 25px;
 }
 
-#sausis .board .column .ball.new {
+#sausis .game .board .column .ball.new {
   -webkit-animation-name: ballAppear;
   -webkit-animation-duration: 1s;
 }
 
-#sausis .board .column .ball.remove {
+#sausis .game .board .column .ball.remove {
   -webkit-animation-name: ballRemove;
   -webkit-animation-duration: 300ms;
 }
@@ -73,22 +73,22 @@
 }
 
 
-#sausis .board .column .ball[data-colour=red] {
+#sausis .game .board .column .ball[data-colour=red] {
   background: #ff322b;
   background: -webkit-radial-gradient(center, ellipse cover, #ff5378 0%,#ff322b 100%);
 }
 
-#sausis .board .column .ball[data-colour=blue] {
+#sausis .game .board .column .ball[data-colour=blue] {
   background: #4292e8;
   background: -webkit-radial-gradient(center, ellipse cover, #53d1ff 0%,#4292e8 100%);
 }
 
-#sausis .board .column .ball[data-colour=green] {
+#sausis .game .board .column .ball[data-colour=green] {
   background: #4de842;
   background: -webkit-radial-gradient(center, ellipse cover, #89ff53 0%,#4de842 100%);
 }
 
-#sausis .character {
+#sausis .game .character {
   position: absolute;
   width: 54px;
   height: 30px;
@@ -96,7 +96,7 @@
   bottom: 30px;
 }
 
-#sausis .game-score {
+#sausis .game .game-score {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -155,7 +155,7 @@
   margin-bottom: 10px;
 }
 
-#sausis .timer {
+#sausis .game .timer {
   position: absolute;
   top: 5px;
   left: 55px;
@@ -163,14 +163,14 @@
   height: 58px;
 }
 
-#sausis .timer .frame {
+#sausis .game .timer .frame {
   position: absolute;
   background: url(media/timer.png);
   width: 100%;
   height: 100%;
 }
 
-#sausis .timer .progress {
+#sausis .game .timer .progress {
   position: absolute;
   top: 6px;
   left: 7px;
@@ -179,7 +179,7 @@
   height: 44px;
 }
 
-#sausis .timer .text {
+#sausis .game .timer .text {
   position: absolute;
   left: 121px;
   top: 7px;
