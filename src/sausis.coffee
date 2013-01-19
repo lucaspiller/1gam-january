@@ -39,6 +39,9 @@ class LevelSelect
   hide: ->
     @domElement.hide()
 
+  show: ->
+    @domElement.show()
+
   levelUnlocked: (level) ->
     # TODO
     true
@@ -46,17 +49,18 @@ class LevelSelect
   playLevel: (level) ->
     # TODO inject dependencies of game to level select
     # TODO pass level to game
-    game = new Game {
+    @game = new Game {
       renderComponent: new DomRenderComponent $('#sausis .game')
       inputComponent: new KeyboardInputComponent
+      endGameCallback: @gameEnded
     }
     @hide()
+    @game.start()
 
-    # TODO the DomRenderComponent should be responsible for this,
-    # and should send us back here
-    $('#sausis button.play-again').click ->
-      game.start()
-    game.start()
+  gameEnded: =>
+    @game.destroy()
+    @game = undefined
+    @show()
 
 #
 # Game Engine
@@ -79,6 +83,9 @@ class KeyboardInputComponent extends NullInputComponent
       # prevent window scrolling from arrow keys
       if e.keyCode == 40 || e.keyCode == 38
         false
+
+  destroy: ->
+    window.onkeydown = undefined
 
   update: ->
     @shouldMoveLeft = @keys[37] # left arrow
@@ -132,6 +139,9 @@ class DomRenderComponent extends NullRenderComponent
   start: ->
     @parent.show()
     @ballsToRemove = []
+
+  destroy: ->
+    @parent.hide()
 
   update: (deltaLength) ->
     timestamp = getTimestamp()
@@ -254,11 +264,15 @@ class DomRenderComponent extends NullRenderComponent
   stopGameLoop: ->
     @running = false
 
-  showGameOverScreen: (finalScore, finalDistance) ->
+  showGameOverScreen: (finalScore, finalDistance, returnToLevelSelectCallback) ->
     gameover = @parent.find('.game-over')
     gameover.find('.score').text formatScore finalScore
     gameover.find('.distance').text formatDistance finalDistance
     @parent.find('.game-over').show()
+    @parent.on 'click', '.game-over button.play-again', =>
+      @parent.find('.game-over').hide()
+      @parent.off 'click'
+      returnToLevelSelectCallback()
 
   # private
 
@@ -344,6 +358,7 @@ class Game
     length: 200
     inputComponent: new NullInputComponent
     renderComponent: new NullRenderComponent
+    endGameCallback: null
     newRowInterval: 5000
     maxRows: 9
     totalTime: 120 # two minutes
@@ -574,7 +589,15 @@ class Game
   triggerGameOver: ->
     @running = false
     @options.renderComponent.stopGameLoop()
-    @options.renderComponent.showGameOverScreen @score, @distance
+    @options.renderComponent.showGameOverScreen @score, @distance, @returnToLevelSelect
+
+  returnToLevelSelect: =>
+    if @options.endGameCallback
+      @options.endGameCallback()
+
+  destroy: =>
+    @options.renderComponent.destroy()
+    @options.inputComponent.destroy()
 
   getTimestamp = ->
     new Date().getTime()
