@@ -18,7 +18,6 @@ window.requestAnimationFrame = (() ->
       window.setTimeout(f,1e3/60)
 )()
 
-
 #
 # Level Select / Menus / etc
 #
@@ -29,7 +28,7 @@ class LevelSelect
 
   start: ->
     $(@domElement).on 'click', '[data-level]', (e) =>
-      level = $(e.target).data 'level'
+      level = $(e.currentTarget).data 'level'
       if @levelUnlocked level
         @playLevel level
       else
@@ -48,16 +47,16 @@ class LevelSelect
 
   playLevel: (level) ->
     # TODO inject dependencies of game to level select
-    # TODO pass level to game
     @game = new Game {
       renderComponent: new DomRenderComponent $('#sausis .game')
       inputComponent: new KeyboardInputComponent
       endGameCallback: @gameEnded
+      level: level
     }
     @hide()
     @game.start()
 
-  gameEnded: =>
+  gameEnded: (level, score, distance) =>
     @game.destroy()
     @game = undefined
     @show()
@@ -359,6 +358,7 @@ class Game
     inputComponent: new NullInputComponent
     renderComponent: new NullRenderComponent
     endGameCallback: null
+    level: null
     newRowInterval: 5000
     maxRows: 9
     totalTime: 120 # two minutes
@@ -593,7 +593,7 @@ class Game
 
   returnToLevelSelect: =>
     if @options.endGameCallback
-      @options.endGameCallback()
+      @options.endGameCallback @options.level, @score, @distance
 
   destroy: =>
     @options.renderComponent.destroy()
