@@ -35,6 +35,7 @@ class LevelSelect
       else
         # TODO show a nicer message
         alert 'Locked!'
+    @highscores.loadScores()
     @show()
 
   hide: ->
@@ -91,6 +92,18 @@ class HighScores
 
     if distance > @scores[level].distance
       @scores[level].distance = distance
+
+    # save scores asynchronously
+    setTimeout(@saveScores, 0)
+
+  saveScores: =>
+    json = JSON.stringify @scores
+    localStorage.setItem 'scores', json
+
+  loadScores: =>
+    json = localStorage.getItem 'scores'
+    if json
+      @scores = JSON.parse json
 
 #
 # Game Engine
