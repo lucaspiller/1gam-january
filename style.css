@@ -32,6 +32,15 @@
   float: left;
   margin: 20px;
   text-align: center;
+  padding: 20px 0;
+}
+
+#sausis .level-select .level .distance:after {
+  content: 'm'
+}
+
+#sausis .level-select .level h2 {
+  margin: 0px;
 }
 
 #sausis .level-select .level:hover {

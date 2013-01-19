@@ -24,6 +24,7 @@ window.requestAnimationFrame = (() ->
 
 class LevelSelect
   constructor: (@domElement) ->
+    @highscores = new HighScores
     true
 
   start: ->
@@ -34,12 +35,21 @@ class LevelSelect
       else
         # TODO show a nicer message
         alert 'Locked!'
+    @show()
 
   hide: ->
     @domElement.hide()
 
   show: ->
+    @updateScores()
     @domElement.show()
+
+  updateScores: ->
+    @domElement.find('[data-level]').each (_, e) =>
+      level = $(e).data 'level'
+      highscore = @highscores.get level
+      $(e).find('.score').text highscore.score
+      $(e).find('.distance').text highscore.distance
 
   levelUnlocked: (level) ->
     # TODO
@@ -57,9 +67,30 @@ class LevelSelect
     @game.start()
 
   gameEnded: (level, score, distance) =>
+    distance *= 10
+    @highscores.set level, score, distance
     @game.destroy()
     @game = undefined
     @show()
+
+class HighScores
+  constructor: ->
+    @scores = {}
+
+  # gets the high score for a level (if any)
+  get: (level) =>
+    @scores[level] || { score: 0, distance: 0 }
+
+  # updates the high score, if this score
+  # is greater than the current score
+  set: (level, score, distance) =>
+    @scores[level] ||= { score: 0, distance: 0 }
+
+    if score > @scores[level].score
+      @scores[level].score = score
+
+    if distance > @scores[level].distance
+      @scores[level].distance = distance
 
 #
 # Game Engine
