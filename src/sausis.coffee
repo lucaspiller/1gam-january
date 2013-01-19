@@ -3,14 +3,8 @@ $ = Zepto
 
 # Create a new instance of the game and run it
 $ ->
-  game = new Game {
-    renderComponent: new DomRenderComponent $('#sausis .game')
-    inputComponent: new KeyboardInputComponent
-  }
-  game.start()
-
-  $('#sausis button.play-again').click ->
-    game.start()
+  levelSelect = new LevelSelect $('#sausis .level-select')
+  levelSelect.start()
 
 # Helper for raf so we can avoid all the browser
 # inconsistencies later on
@@ -23,6 +17,50 @@ window.requestAnimationFrame = (() ->
     (f) ->
       window.setTimeout(f,1e3/60)
 )()
+
+
+#
+# Level Select / Menus / etc
+#
+
+class LevelSelect
+  constructor: (@domElement) ->
+    true
+
+  start: ->
+    $(@domElement).on 'click', '[data-level]', (e) =>
+      level = $(e.target).data 'level'
+      if @levelUnlocked level
+        @playLevel level
+      else
+        # TODO show a nicer message
+        alert 'Locked!'
+
+  hide: ->
+    @domElement.hide()
+
+  levelUnlocked: (level) ->
+    # TODO
+    true
+
+  playLevel: (level) ->
+    # TODO inject dependencies of game to level select
+    # TODO pass level to game
+    game = new Game {
+      renderComponent: new DomRenderComponent $('#sausis .game')
+      inputComponent: new KeyboardInputComponent
+    }
+    @hide()
+
+    # TODO the DomRenderComponent should be responsible for this,
+    # and should send us back here
+    $('#sausis button.play-again').click ->
+      game.start()
+    game.start()
+
+#
+# Game Engine
+#
 
 class NullInputComponent
   start: -> true
@@ -88,10 +126,11 @@ class DomRenderComponent extends NullRenderComponent
   running: false
   progressWidth: 328
 
-  constructor: (@parent = $('body')) ->
+  constructor: (@parent) ->
     true
 
   start: ->
+    @parent.show()
     @ballsToRemove = []
 
   update: (deltaLength) ->

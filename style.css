@@ -15,9 +15,33 @@
   overflow: hidden;
 }
 
-#sausis .game .board {
-  background: url(media/river1.png);
+#sausis .level-select {
+  width: 100%;
+  height: 100%;
   position: relative;
+}
+
+#sausis .level-select {
+  background: #ccc;
+}
+
+#sausis .level-select .level {
+  display: block;
+  width: 150px;
+  border: 5px solid #999;
+  float: left;
+  margin: 20px;
+  text-align: center;
+}
+
+#sausis .level-select .level:hover {
+  border: 5px solid #333;
+  cursor: pointer;
+}
+
+#sausis .game .board {
+  position: relative;
+  background: url(media/river1.png);
 }
 
 #sausis .game .board .columns {
