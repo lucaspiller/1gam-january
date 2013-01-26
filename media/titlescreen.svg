@@ -3047,9 +3047,9 @@
      showgrid="false"
      inkscape:window-width="1366"
      inkscape:window-height="720"
-     inkscape:window-x="-4"
-     inkscape:window-y="5"
-     inkscape:window-maximized="0"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -3068,7 +3068,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Pond"
-     style="display:none"
+     style="display:inline"
      sodipodi:insensitive="true">
     <g
        id="g9458"

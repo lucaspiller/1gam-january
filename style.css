@@ -21,7 +21,7 @@
   height: 100%;
   position: relative;
   background: url(media/titlescreen.png);
-  padding-top: 150px;
+  padding-top: 180px;
 }
 
 #sausis .level-select .level {
@@ -32,7 +32,7 @@
   text-align: center;
   padding: 10px 0;
   width: 174px;
-  height: 79px;
+  height: 78px;
   background: url(media/level.png);
   cursor: pointer;
 }
