@@ -77,11 +77,6 @@
   -webkit-animation-duration: 1s;
 }
 
-#sausis .game .board .column .ball.remove {
-  -webkit-animation-name: ballRemove;
-  -webkit-animation-duration: 300ms;
-}
-
 @-webkit-keyframes ballAppear {
   0% {
     -webkit-transform:translate(0px, -200px);
@@ -90,6 +85,10 @@
   100% {
     -webkit-transform:translate(0px, 0px);
   }
+}
+
+#sausis .game .board .column .ball.remove {
+  -webkit-animation: ballRemove 300ms 150ms;
 }
 
 @-webkit-keyframes ballRemove {
@@ -106,6 +105,33 @@
   }
 }
 
+#sausis .game .board .column .ball.pop {
+  -webkit-animation-name: ballPop;
+  -webkit-animation-duration: 150ms;
+}
+
+@-webkit-keyframes ballPop {
+  /* fall down */
+  100% {
+    -webkit-transform: translateY(300px);
+  }
+}
+
+#sausis .game .board .column .ball.push {
+  -webkit-animation-name: ballPush;
+  -webkit-animation-duration: 150ms;
+}
+
+@-webkit-keyframes ballPush {
+  /* fall up */
+  0% {
+    -webkit-transform: translateY(300px);
+  }
+}
+
+#sausis .game .board .column .ball.push-remove {
+  -webkit-animation: ballPush 150ms, ballRemove 300ms 150ms;
+}
 
 #sausis .game .board .column .ball[data-colour=red] {
   background: #ff322b;

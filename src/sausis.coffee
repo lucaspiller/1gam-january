@@ -280,17 +280,25 @@ class DomRenderComponent extends NullRenderComponent
 
   pushBallToColumn: (ballObject, columnIndex) ->
     ball = createElementForBall ballObject
+    ball.addClass 'push'
     column = @board.find(".column[data-x='#{columnIndex}']")
     column.append ball
 
   popBallFromColumn: (ballObject, columnIndex) ->
-    @removeBall ballObject.id
+    column = @board.find(".column[data-x='#{columnIndex}']")
+    ball = column.find(".ball[data-id='#{ballObject.id}']")
+    ball.addClass 'pop'
+    @removeBallInMs ballObject.id, 150
 
   destroyBallFromColumn: (ballObject, columnIndex) ->
     column = @board.find(".column[data-x='#{columnIndex}']")
     ball = column.find(".ball[data-id='#{ballObject.id}']")
-    ball.addClass 'remove'
-    @removeBallInMs ballObject.id, 300
+    if ball.hasClass 'push'
+      ball.removeClass 'push'
+      ball.addClass 'push-remove'
+    else
+      ball.addClass 'remove'
+    @removeBallInMs ballObject.id, 450
 
   buildCharacterOnColumn: (columnIndex, oldColumnIndex) ->
     @parent.find(".character").remove()
