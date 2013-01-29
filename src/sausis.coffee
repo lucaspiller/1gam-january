@@ -271,6 +271,18 @@ class NullRenderComponent
     clearTimeout @gameLoopTimer
 
 class DomRenderComponent extends NullRenderComponent
+  SPRITES = [
+    'sheep1',
+    'sheep2',
+    'flower',
+    'flower',
+    'flower',
+    'flower',
+    'flower',
+    'tree',
+    'tree'
+  ]
+
   running: false
   progressWidth: 328
 
@@ -326,6 +338,21 @@ class DomRenderComponent extends NullRenderComponent
 
     @offset = -lengthToPx @length
     @board.css 'top', @offset
+
+    # sprites
+    currentDistance = -5
+    while currentDistance <= @length + 5
+      currentDistance += 1.5 + (Math.random() * 2)
+      spriteOffsetTop = lengthToPx(currentDistance) + 250
+      spriteOffsetLeft = 450 + (Math.random() * 250)
+      spriteIndex = Math.floor(Math.random() * SPRITES.length)
+
+      sprite = $('<div/>')
+      sprite.addClass 'sprite'
+      sprite.addClass SPRITES[spriteIndex]
+      sprite.css 'left', spriteOffsetLeft
+      sprite.css 'top', spriteOffsetTop
+      @board.append sprite
 
     # markers
     for distance in markers

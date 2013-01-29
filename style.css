@@ -54,6 +54,34 @@
   background: url(media/river1.png);
 }
 
+#sausis .game .board .sprite {
+  position: absolute;
+}
+
+#sausis .game .board .sprite.sheep1 {
+  background: url(media/sprite_sheep1.png);
+  width: 115px;
+  height: 97px;
+}
+
+#sausis .game .board .sprite.sheep2 {
+  background: url(media/sprite_sheep2.png);
+  width: 115px;
+  height: 97px;
+}
+
+#sausis .game .board .sprite.flower {
+  background: url(media/sprite_flower.png);
+  width: 72px;
+  height: 76px;
+}
+
+#sausis .game .board .sprite.tree {
+  background: url(media/sprite_tree.png);
+  width: 111px;
+  height: 95px;
+}
+
 #sausis .game .board .marker {
   background: url(media/sign.png);
   position: absolute;
