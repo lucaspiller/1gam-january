@@ -54,6 +54,20 @@
   background: url(media/river1.png);
 }
 
+#sausis .game .board .marker {
+  background: url(media/sign.png);
+  position: absolute;
+  width: 85px;
+  height: 96px;
+  font-size: 1.2em;
+  padding-top: 30px;
+  padding-left: 4px;
+  padding-right: 35px;
+  text-align: center;
+  left: 435px;
+  -webkit-transform: rotate(-5deg);
+}
+
 #sausis .game .board .columns {
   position: relative;
   left: 35px;

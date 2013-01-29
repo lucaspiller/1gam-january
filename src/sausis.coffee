@@ -167,7 +167,6 @@ class LevelSelect
     @game.start()
 
   gameEnded: (levelIndex, score, distance) =>
-    distance *= 10
     @highscores.set levelIndex, score, distance
     @game.destroy()
     @game = undefined
@@ -253,7 +252,7 @@ class NullRenderComponent
   update: -> true
   updateScore: (score) -> true
   updateTimer: (time, totalTime) -> true
-  buildGameBoard: -> true
+  buildGameBoard: (length, markers) -> true
   buildColumn: (columnIndex) -> true
   addRow: -> true
   addNewBallToColumn: (ballObject, columnIndex) -> true
@@ -310,7 +309,7 @@ class DomRenderComponent extends NullRenderComponent
     else
       @parent.find('.timer .progress').css 'width', (remainingTime / totalTime) * @progressWidth
 
-  buildGameBoard: (@length) ->
+  buildGameBoard: (@length, markers) ->
     # Hide gameover screen (if any)
     @parent.find('.game-over').hide()
 
@@ -328,6 +327,16 @@ class DomRenderComponent extends NullRenderComponent
     @offset = -lengthToPx @length
     @board.css 'top', @offset
 
+    # markers
+    for distance in markers
+      marker = $('<div/>')
+      marker.text formatDistance(distance)
+      marker.addClass 'marker'
+      markerOffset = lengthToPx(@length - distance) + 270
+      marker.css 'top', markerOffset
+      @board.append marker
+
+    # columns
     @columns = $('<div/>')
     @columns.addClass 'columns'
     @columnsOffset = lengthToPx(@length) + 270
@@ -456,7 +465,7 @@ class DomRenderComponent extends NullRenderComponent
     "#{score}".replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 
   formatDistance = (distance) ->
-    "#{distance * 10}m"
+    "#{distance}m"
 
   formatTime = (time) ->
     minutes = Math.floor time / 60
@@ -560,7 +569,7 @@ class Game
   # private
 
   buildGameBoard: ->
-    @options.renderComponent.buildGameBoard(@options.config.length)
+    @options.renderComponent.buildGameBoard(@options.config.length, @options.config.stars)
 
     # initialise 2D array of balls
     @balls = []
