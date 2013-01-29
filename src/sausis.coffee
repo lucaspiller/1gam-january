@@ -161,7 +161,7 @@ class NullRenderComponent
   popBallFromColumn: (ballObject, columnIndex) -> true
   pushBallToColumn: (ballObject, columnIndex) -> true
   destroyBallFromColumn: (ballObject, columnIndex) -> true
-  buildCharacterOnColumn: (columnIndex) -> true
+  buildCharacterOnColumn: (columnIndex, oldColumnIndex) -> true
   showGameOverScreen: (finalScore, finalDistance) -> true
 
   startGameLoop: (callback) ->
@@ -292,11 +292,13 @@ class DomRenderComponent extends NullRenderComponent
     ball.addClass 'remove'
     @removeBallInMs ballObject.id, 300
 
-  buildCharacterOnColumn: (columnIndex) ->
+  buildCharacterOnColumn: (columnIndex, oldColumnIndex) ->
     @parent.find(".character").remove()
     character = $('<div/>')
     character.addClass 'character'
-    character.css 'left', (columnIndex * 50) - 3
+    character.css 'left', (columnIndex * 50) - 18
+    if columnIndex < oldColumnIndex
+      character.addClass 'reverse'
     @parent.append character
 
   startGameLoop: (callback) ->
@@ -389,8 +391,8 @@ class Character
 
   # private
   moveToColumn: (column) ->
+    @options.renderComponent.buildCharacterOnColumn column, @column
     @column = column
-    @options.renderComponent.buildCharacterOnColumn @column
 
 class Game
   running: false

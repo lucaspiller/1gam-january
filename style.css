@@ -124,10 +124,37 @@
 
 #sausis .game .character {
   position: absolute;
-  width: 54px;
-  height: 30px;
-  background: #000;
-  bottom: 30px;
+  width: 74px;
+  height: 87px;
+  background: url(media/character.png);
+  bottom: 5px;
+  -webkit-animation-name: character;
+  -webkit-animation-duration: 200ms;
+}
+
+@-webkit-keyframes character {
+  0% {
+    -webkit-transform: translateX(-50px);
+  }
+
+  50% {
+    -webkit-transform: translateX(-25px) translateY(-5px);
+  }
+}
+
+#sausis .game .character.reverse {
+  -webkit-transform: scaleX(-1);
+  -webkit-animation-name: characterReverse;
+}
+
+@-webkit-keyframes characterReverse {
+  0% {
+    -webkit-transform: translateX(50px) scaleX(-1);
+  }
+
+  50% {
+    -webkit-transform: translateX(25px) translateY(-5px) scaleX(-1);
+  }
 }
 
 #sausis .game .game-score {
