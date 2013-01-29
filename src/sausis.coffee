@@ -23,15 +23,106 @@ window.requestAnimationFrame = (() ->
 #
 
 class LevelSelect
+  LEVELS = [
+    {
+      name: "Level 1",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 2",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 3",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 4",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 5",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 6",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 7",
+      length: 50,
+      stars: [
+        15,
+        30,
+        50
+      ],
+      speed: 1
+    },
+    {
+      name: "Level 8",
+      length: 200,
+      stars: [
+        40,
+        120,
+        200
+      ],
+      speed: 10
+    }
+  ]
+
+  LEVEL_TEMPLATE = "
+    <div class='level' data-level='<%= index %>'>
+      <h2><%= config.name %></h2>
+      <span class='score'><%= highscore.score %></span>
+      <span class='distance'><%= highscore.distance %></span>
+    </div>
+  "
+
   constructor: (@domElement) ->
     @highscores = new HighScores
     true
 
   start: ->
     $(@domElement).on 'click', '[data-level]', (e) =>
-      level = $(e.currentTarget).data 'level'
-      if @levelUnlocked level
-        @playLevel level
+      levelIndex = $(e.currentTarget).data 'level'
+      if @levelUnlocked levelIndex
+        @playLevel levelIndex
       else
         # TODO show a nicer message
         alert 'Locked!'
@@ -42,34 +133,42 @@ class LevelSelect
     @domElement.hide()
 
   show: ->
-    @updateScores()
+    @buildLevels()
     @domElement.show()
 
-  updateScores: ->
-    @domElement.find('[data-level]').each (_, e) =>
-      level = $(e).data 'level'
-      highscore = @highscores.get level
-      $(e).find('.score').text highscore.score
-      $(e).find('.distance').text highscore.distance
+  buildLevels: ->
+    # remove old levels
+    $(@domElement).find('[data-level]').remove()
+
+    # build each level
+    for config, levelIndex in LEVELS
+      highscore = @highscores.get levelIndex
+      level = _.template(LEVEL_TEMPLATE)({
+        index: levelIndex,
+        config: config,
+        highscore: highscore
+      })
+      $(@domElement).find('.levels').append level
 
   levelUnlocked: (level) ->
     # TODO
     true
 
-  playLevel: (level) ->
-    # TODO inject dependencies of game to level select
+  playLevel: (levelIndex) ->
+    levelConfig = LEVELS[levelIndex]
     @game = new Game {
       renderComponent: new DomRenderComponent $('#sausis .game')
       inputComponent: new KeyboardInputComponent
       endGameCallback: @gameEnded
-      level: level
+      level: levelIndex,
+      config: levelConfig
     }
     @hide()
     @game.start()
 
-  gameEnded: (level, score, distance) =>
+  gameEnded: (levelIndex, score, distance) =>
     distance *= 10
-    @highscores.set level, score, distance
+    @highscores.set levelIndex, score, distance
     @game.destroy()
     @game = undefined
     @show()
@@ -408,12 +507,11 @@ class Game
   defaults:
     columns: 7
     initialRows: 6
-    length: 200
     inputComponent: new NullInputComponent
     renderComponent: new NullRenderComponent
     endGameCallback: null
     level: null
-    newRowInterval: 5000
+    config: null
     maxRows: 9
     totalTime: 120 # two minutes
 
@@ -421,6 +519,7 @@ class Game
     _.defaults @options, @defaults
 
   start: ->
+    @newRowIntervalMs = (1 / @options.config.speed) * 10000
     @options.inputComponent.start()
     @options.renderComponent.start()
     @buildGameBoard()
@@ -452,7 +551,8 @@ class Game
 
     # pass the elapsed time to the renderer to tell it how far to scroll
     deltaMs = getTimestamp() - @lastRenderMs
-    deltaLength = deltaMs * (1 / @options.newRowInterval)
+
+    deltaLength = deltaMs * (1 / @newRowIntervalMs)
     @options.renderComponent.update deltaLength
 
     @lastRenderMs = getTimestamp()
@@ -460,7 +560,7 @@ class Game
   # private
 
   buildGameBoard: ->
-    @options.renderComponent.buildGameBoard(@options.length)
+    @options.renderComponent.buildGameBoard(@options.config.length)
 
     # initialise 2D array of balls
     @balls = []
@@ -496,7 +596,7 @@ class Game
       @options.renderComponent.addNewBallToColumn ball, x
 
     @rowsGenerated++
-    @buildNextRowAt = getTimestamp() + @options.newRowInterval
+    @buildNextRowAt = getTimestamp() + @newRowIntervalMs
 
   buildCharacter: ->
     @character = new Character {
