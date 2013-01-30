@@ -356,7 +356,12 @@ class DomRenderComponent extends NullRenderComponent
     # markers
     for distance in markers
       marker = $('<div/>')
-      marker.text formatDistance(distance)
+
+      html = formatDistance(distance)
+      if distance == @length
+        html += "<br/>Fin!"
+      marker.html html
+
       marker.addClass 'marker'
       markerOffset = lengthToPx(@length - distance) + 270
       marker.css 'top', markerOffset
@@ -586,7 +591,12 @@ class Game
     markerDistance = @options.config.stars[@nextMarkerIndex]
     if @distance > markerDistance
       @nextMarkerIndex++
-      @addedTime += (@options.totalTime - remainingTime)
+      # check whether we have passed the last marker
+      if @nextMarkerIndex == @options.config.stars.length
+        @distance = @options.config.length
+        return @triggerGameOver()
+      else
+        @addedTime += (@options.totalTime - remainingTime)
 
     @options.inputComponent.update()
     @handleInput()
