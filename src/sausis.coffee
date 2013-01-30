@@ -36,73 +36,73 @@ class LevelSelect
     },
     {
       name: "Level 2",
-      length: 50,
+      length: 60,
       stars: [
-        15,
-        30,
-        50
+        20,
+        40,
+        60
       ],
-      speed: 1
+      speed: 1.2
     },
     {
       name: "Level 3",
-      length: 50,
+      length: 80,
       stars: [
-        15,
-        30,
-        50
+        20,
+        40,
+        80
       ],
-      speed: 1
+      speed: 1.2
     },
     {
       name: "Level 4",
-      length: 50,
+      length: 80,
       stars: [
-        15,
-        30,
-        50
+        20,
+        40,
+        80
       ],
-      speed: 1
+      speed: 1.5
     },
     {
       name: "Level 5",
-      length: 50,
+      length: 100,
       stars: [
-        15,
         30,
-        50
+        60,
+        100
       ],
-      speed: 1
+      speed: 1.5
     },
     {
       name: "Level 6",
-      length: 50,
+      length: 120,
       stars: [
-        15,
-        30,
-        50
+        50,
+        100,
+        120
       ],
-      speed: 1
+      speed: 1.5
     },
     {
       name: "Level 7",
-      length: 50,
+      length: 60,
       stars: [
-        15,
-        30,
-        50
+        20,
+        40,
+        60
       ],
-      speed: 1
+      speed: 3
     },
     {
       name: "Level 8",
-      length: 200,
+      length: 50,
       stars: [
-        40,
-        120,
-        200
+        20,
+        30,
+        50
       ],
-      speed: 10
+      speed: 5
     }
   ]
 
