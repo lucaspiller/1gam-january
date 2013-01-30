@@ -284,6 +284,24 @@
   margin-bottom: 10px;
 }
 
+#sausis .game-over .stars {
+  width: 210px;
+  height: 60px;
+  margin: 0 auto;
+}
+
+#sausis .game-over .stars .star {
+  float: left;
+  width: 50px;
+  height: 48px;
+  margin: 10px;
+  background: url(media/star_large.png);
+}
+
+#sausis .game-over .stars .star.active {
+  background: url(media/star_large_active.png);
+}
+
 #sausis .game .timer {
   position: absolute;
   top: 5px;

@@ -470,10 +470,15 @@ class DomRenderComponent extends NullRenderComponent
   stopGameLoop: ->
     @running = false
 
-  showGameOverScreen: (finalScore, finalDistance, returnToLevelSelectCallback) ->
+  showGameOverScreen: (finalScore, finalDistance, stars, returnToLevelSelectCallback) ->
     gameover = @parent.find('.game-over')
     gameover.find('.score').text formatScore finalScore
     gameover.find('.distance').text formatDistance finalDistance
+
+    for distance, index in stars
+      if finalDistance >= distance
+        gameover.find("#star#{index}").addClass('active')
+
     @parent.find('.game-over').show()
     @parent.on 'click', '.game-over button.play-again', =>
       @parent.find('.game-over').hide()
@@ -815,7 +820,7 @@ class Game
   triggerGameOver: ->
     @running = false
     @options.renderComponent.stopGameLoop()
-    @options.renderComponent.showGameOverScreen @score, @distance, @returnToLevelSelect
+    @options.renderComponent.showGameOverScreen @score, @distance, @options.config.stars, @returnToLevelSelect
 
   returnToLevelSelect: =>
     if @options.endGameCallback
