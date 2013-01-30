@@ -111,6 +111,11 @@ class LevelSelect
       <h2><%= config.name %></h2>
       <span class='score'><%= highscore.score %></span>
       <span class='distance'><%= highscore.distance %></span>
+      <div class='stars'>
+        <div class='star' id='star0'></div>
+        <div class='star' id='star1'></div>
+        <div class='star' id='star2'></div>
+      </div>
     </div>
   "
 
@@ -143,11 +148,17 @@ class LevelSelect
     # build each level
     for config, levelIndex in LEVELS
       highscore = @highscores.get levelIndex
-      level = _.template(LEVEL_TEMPLATE)({
+      level = $(_.template(LEVEL_TEMPLATE)({
         index: levelIndex,
         config: config,
         highscore: highscore
-      })
+      }))
+
+      # mark unlocked stars as active
+      for distance, index in config.stars
+        if highscore.distance >= distance
+          level.find("#star#{index}").addClass('active')
+
       $(@domElement).find('.levels').append level
 
   levelUnlocked: (level) ->

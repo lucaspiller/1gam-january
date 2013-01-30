@@ -30,9 +30,9 @@
   float: left;
   margin: 12px;
   text-align: center;
-  padding: 10px 0;
+  padding: 4px 0;
   width: 174px;
-  height: 78px;
+  height: 90px;
   background: url(media/level.png);
   cursor: pointer;
 }
@@ -47,6 +47,24 @@
 
 #sausis .level-select .level h2 {
   margin: 0px;
+}
+
+
+#sausis .level-select .level .stars {
+  width: 78px;
+  margin: 0 auto;
+}
+
+#sausis .level-select .level .stars .star {
+  float: left;
+  width: 20px;
+  height: 19px;
+  margin: 3px;
+  background: url(media/star_small.png);
+}
+
+#sausis .level-select .level .stars .star.active {
+  background: url(media/star_small_active.png);
 }
 
 #sausis .game .board {
