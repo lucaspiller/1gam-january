@@ -24,6 +24,20 @@
   padding-top: 180px;
 }
 
+#sausis .level-select header {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+}
+
+#sausis .level-select header h1 {
+  margin: 0;
+}
+
+#sausis .level-select header p {
+  margin: 0;
+}
+
 #sausis .level-select .level {
   display: block;
   width: 150px;
