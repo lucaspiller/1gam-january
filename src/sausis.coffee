@@ -251,7 +251,7 @@ class NullRenderComponent
   start: -> true
   update: -> true
   updateScore: (score) -> true
-  updateTimer: (time, totalTime) -> true
+  updateTimer: (remainingTime, totalTime) -> true
   buildGameBoard: (length, markers) -> true
   buildColumn: (columnIndex) -> true
   addRow: -> true
@@ -312,11 +312,10 @@ class DomRenderComponent extends NullRenderComponent
   updateScore: (score) ->
     @parent.find('.game-score').text formatScore score
 
-  updateTimer: (time, totalTime) ->
-    remainingTime = totalTime - time
+  updateTimer: (remainingTime, totalTime) ->
     @parent.find('.timer .text').text formatTime Math.floor(remainingTime)
 
-    if time == totalTime
+    if remainingTime == 0
       @parent.find('.timer .progress').remove()
     else
       @parent.find('.timer .progress').css 'width', (remainingTime / totalTime) * @progressWidth
@@ -564,17 +563,30 @@ class Game
     @options.renderComponent.startGameLoop(@gameLoop)
     @running = true
     @distance = 0
+    @nextMarkerIndex = 0
+    @addedTime = 0
     @score = 0
     @rowsGenerated = 0
 
   gameLoop: =>
     @distance = @rowsGenerated - @countRows()
     @distance = 0 if @distance < 0
+
+    # check that the timer hasn't expired
     timeElapsed = (getTimestamp() - @startTime) / 1000
-    if timeElapsed > @options.totalTime
+    if (timeElapsed - @addedTime) > @options.totalTime
       timeElapsed = @options.totalTime
       @triggerGameOver()
-    @options.renderComponent.updateTimer timeElapsed, @options.totalTime
+
+    # update timer
+    remainingTime = (@options.totalTime + @addedTime) - timeElapsed
+    @options.renderComponent.updateTimer remainingTime, @options.totalTime
+
+    # add more time if we have just passed a marker
+    markerDistance = @options.config.stars[@nextMarkerIndex]
+    if @distance > markerDistance
+      @nextMarkerIndex++
+      @addedTime += (@options.totalTime - remainingTime)
 
     @options.inputComponent.update()
     @handleInput()
