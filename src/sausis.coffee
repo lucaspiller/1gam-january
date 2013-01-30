@@ -345,18 +345,18 @@ class DomRenderComponent extends NullRenderComponent
     @board = $('<div/>')
     @board.addClass 'board'
 
-    @height = lengthToPx(@length) + window.innerHeight
-    @expectedOffset = lengthToPx(@length) + 200
+    @height = lengthToPx(@length) + (window.innerHeight * 2)
+    @expectedOffset = lengthToPx(@length) + 200 + window.innerHeight
     @board.css 'height', @height
 
-    @offset = -lengthToPx @length
+    @offset = -lengthToPx(@length) - window.innerHeight
     @board.css 'top', @offset
 
     # sprites
-    currentDistance = -5
+    currentDistance = 0
     while lengthToPx(currentDistance) <= @height
       currentDistance += 1.5 + (Math.random() * 2)
-      spriteOffsetTop = lengthToPx(currentDistance) + 250
+      spriteOffsetTop = lengthToPx(currentDistance)
       spriteOffsetLeft = 450 + (Math.random() * 250)
       spriteIndex = Math.floor(Math.random() * SPRITES.length)
 
@@ -377,14 +377,14 @@ class DomRenderComponent extends NullRenderComponent
       marker.html html
 
       marker.addClass 'marker'
-      markerOffset = lengthToPx(@length - distance) + 170
+      markerOffset = lengthToPx(@length - distance) + 170 + window.innerHeight
       marker.css 'top', markerOffset
       @board.append marker
 
     # columns
     @columns = $('<div/>')
     @columns.addClass 'columns'
-    @columnsOffset = lengthToPx(@length) + 270
+    @columnsOffset = lengthToPx(@length) + 270 + window.innerHeight
     @columns.css 'top', @columnsOffset
     @board.append @columns
 
