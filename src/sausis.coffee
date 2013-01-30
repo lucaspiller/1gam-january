@@ -328,6 +328,20 @@ class DomRenderComponent extends NullRenderComponent
     @parent.find('.board').remove()
 
     # Create the new game board
+    #
+    # The board is a really long DIV that we adjust the offset of
+    # to appear as if the viewport is scrolling:
+    #     _
+    #    |B|
+    #    | |
+    #    |_|   V - The viewport
+    #   |   |  B - The game board
+    #   | V |
+    #   |___|
+    #    | |
+    #    |_|
+    #
+
     @board = $('<div/>')
     @board.addClass 'board'
 
@@ -340,7 +354,7 @@ class DomRenderComponent extends NullRenderComponent
 
     # sprites
     currentDistance = -5
-    while currentDistance <= @length + 5
+    while lengthToPx(currentDistance) <= @height
       currentDistance += 1.5 + (Math.random() * 2)
       spriteOffsetTop = lengthToPx(currentDistance) + 250
       spriteOffsetLeft = 450 + (Math.random() * 250)
@@ -363,7 +377,7 @@ class DomRenderComponent extends NullRenderComponent
       marker.html html
 
       marker.addClass 'marker'
-      markerOffset = lengthToPx(@length - distance) + 270
+      markerOffset = lengthToPx(@length - distance) + 170
       marker.css 'top', markerOffset
       @board.append marker
 
